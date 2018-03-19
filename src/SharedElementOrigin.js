@@ -2,7 +2,7 @@
 
 import React from 'react';
 import ReactNative, {View, UIManager} from 'react-native';
-import TransitionContext from './TransitionContext';
+import TransitionContext, {type TransitionState} from './TransitionContext';
 
 type Props = {
   id: string,
@@ -11,6 +11,15 @@ type Props = {
   children: Function,
   style?: Object,
   headerHeight?: number,
+};
+
+type ConsumerFunctions = {
+  getDestination: () => ?ElementMeasurement,
+  getState: () => TransitionState,
+  animateElement: (id: string, animationParam: AnimationParams) => void,
+  setImage: (image: ImageType) => void,
+  setDestination: (destination: ElementMeasurement) => void,
+  setSource: (source: ElementMeasurement) => void,
 };
 
 export default class SharedElementOrigin extends React.Component<Props> {
@@ -33,7 +42,7 @@ export default class SharedElementOrigin extends React.Component<Props> {
           setImage,
           setDestination,
           getState,
-        }) => {
+        }: ConsumerFunctions) => {
           return (
             <View
               ref={(node) => {
@@ -61,7 +70,7 @@ export default class SharedElementOrigin extends React.Component<Props> {
             >
               {children({
                 getState,
-                animateElement: (animationParam: Object) => {
+                animateElement: (animationParam: AnimationParams) => {
                   if (this._measurement) {
                     setSource(this._measurement);
                     setDestination({

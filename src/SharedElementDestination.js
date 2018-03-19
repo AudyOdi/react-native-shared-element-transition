@@ -2,12 +2,17 @@
 
 import React from 'react';
 import {View} from 'react-native';
-import TransitionContext from './TransitionContext';
+import TransitionContext, {type TransitionState} from './TransitionContext';
 
 type Props = {
   style?: Object,
-  headerHeight?: Object,
+  headerHeight?: number,
   children: Function,
+};
+
+type ConsumerFunctions = {
+  getDestination: () => ?ElementMeasurement,
+  getState: () => TransitionState,
 };
 
 export default class SharedElementDestination extends React.Component<Props> {
@@ -18,26 +23,28 @@ export default class SharedElementDestination extends React.Component<Props> {
     let {style, headerHeight = 0, children} = this.props;
     return (
       <TransitionContext.Consumer>
-        {({getDestination, getState}) => {
+        {({getDestination, getState}: ConsumerFunctions) => {
           let destination = getDestination();
-          let adjustedDestination = {
-            ...destination,
-            y: destination.y - headerHeight,
-          };
+          let adjustedDestination = destination;
+          if (destination) {
+            adjustedDestination = {
+              ...destination,
+              y: destination.y - headerHeight,
+            };
+          }
+          let sharedElementDestinationStyle = {};
+          if (adjustedDestination) {
+            sharedElementDestinationStyle = {
+              width: adjustedDestination.width,
+              height: adjustedDestination.height,
+              transform: [
+                {translateX: adjustedDestination.x},
+                {translateY: adjustedDestination.y},
+              ],
+            };
+          }
           return (
-            <View
-              style={[
-                {
-                  width: adjustedDestination.width,
-                  height: adjustedDestination.height,
-                  transform: [
-                    {translateX: adjustedDestination.x},
-                    {translateY: adjustedDestination.y},
-                  ],
-                },
-                style,
-              ]}
-            >
+            <View style={[sharedElementDestinationStyle, style]}>
               {children({getState, destination: adjustedDestination})}
             </View>
           );

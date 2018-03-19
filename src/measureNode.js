@@ -1,15 +1,18 @@
 // @flow
 
-import {UIManager} from 'react-native';
+import ReactNative, {UIManager} from 'react-native';
 
-export default function measureNode(node: ?number) {
-  return new Promise((resolve, reject) => {
-    UIManager.measureInWindow(
-      node,
-      (e) => reject(e),
-      (x, y, w, h) => {
-        resolve({x, y, w, h});
-      },
-    );
+export default async function measureNode(node: ?number) {
+  let handle = ReactNative.findNodeHandle(node);
+  let measurement = await new Promise((resolve) => {
+    UIManager.measure(handle, (x, y, width, height, pageX, pageY) => {
+      resolve({
+        width,
+        height,
+        x: pageX,
+        y: pageY,
+      });
+    });
   });
+  return measurement;
 }

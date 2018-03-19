@@ -5,10 +5,8 @@ import {Animated} from 'react-native';
 
 import TransitionContext from './TransitionContext';
 
-type ImageType = { uri: string } | number;
-
 type State = {
-  id: ?number,
+  id: ?string,
   isAnimating: boolean,
 };
 
@@ -23,15 +21,12 @@ const initialState = {
 
 export default class TransitionProvider extends React.Component<Props, State> {
   state = initialState;
-  _animatedValue = new Animated.Value(0);
+  _animatedValue: Animated.Value = new Animated.Value(0);
   _image: ?ImageType = null;
-  _source = null;
-  _destination = null;
+  _source: ?ElementMeasurement = null;
+  _destination: ?ElementMeasurement = null;
 
-  _animateImage = (
-    toValue: number,
-    animationParam: { type: 'spring' | 'timing', duration: number },
-  ) => {
+  _animateImage = (toValue: number, animationParam: AnimationParams) => {
     let {type, ...otherAnimationParams} = animationParam;
     Animated[type](this._animatedValue, {
       toValue,
@@ -49,29 +44,28 @@ export default class TransitionProvider extends React.Component<Props, State> {
     let {isAnimating} = this.state;
     let animatedProps = {};
     if (isAnimating && this._source && this._destination) {
+      let source = this._source;
+      let destination = this._destination;
       animatedProps = {
         width: this._animatedValue.interpolate({
           inputRange: [0, 1],
-          outputRange: [this._source.width || 0, this._destination.width || 0],
+          outputRange: [source.width || 0, destination.width || 0],
         }),
         height: this._animatedValue.interpolate({
           inputRange: [0, 1],
-          outputRange: [
-            this._source.height || 0,
-            this._destination.height || 0,
-          ],
+          outputRange: [source.height || 0, destination.height || 0],
         }),
         transform: [
           {
             translateX: this._animatedValue.interpolate({
               inputRange: [0, 1],
-              outputRange: [this._source.x || 0, this._destination.x || 0],
+              outputRange: [source.x || 0, destination.x || 0],
             }),
           },
           {
             translateY: this._animatedValue.interpolate({
               inputRange: [0, 1],
-              outputRange: [this._source.y || 0, this._destination.y || 0],
+              outputRange: [source.y || 0, destination.y || 0],
             }),
           },
         ],

@@ -1,6 +1,6 @@
 // @flow
 
-import { StackNavigator } from 'react-navigation';
+import {StackNavigator} from 'react-navigation';
 
 import List from './List';
 import Detail from './Detail';
