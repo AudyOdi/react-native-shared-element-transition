@@ -1,0 +1,5 @@
+/node_modules
+/coverage
+/flow-typed/npm
+/src/registerServiceWorker.js
+*.json
