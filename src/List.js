@@ -17,44 +17,41 @@ type Props = {
   navigation: { navigate: Function },
 };
 
-export default class List extends React.Component<Props> {
-  _imageRefs = new Map();
-  render() {
-    return imageList.map((uri, index) => {
-      return (
-        <SharedElementOrigin
-          key={index}
-          id={uri}
-          style={{width: '50%'}}
-          headerHeight={Header.HEIGHT}
-          image={{uri}}
-          destination={{
-            x: 0,
-            y: 0,
-            width: windowWidth,
-            height: 300,
-          }}
-        >
-          {({animateElement}) => {
-            return (
-              <TouchableOpacity
-                onPress={() => {
-                  animateElement({
-                    type: 'timing',
-                    duration: 500,
-                  });
-                  this.props.navigation.navigate('Detail', {imageUri: uri});
-                }}
-              >
-                <Image
-                  source={{uri, cache: 'force-cache'}}
-                  style={{width: '100%', height: 100}}
-                />
-              </TouchableOpacity>
-            );
-          }}
-        </SharedElementOrigin>
-      );
-    });
-  }
+export default function List(props: Props) {
+  return imageList.map((uri, index) => {
+    return (
+      <SharedElementOrigin
+        key={index}
+        id={uri}
+        style={{width: '50%'}}
+        headerHeight={Header.HEIGHT}
+        image={{uri}}
+        destination={{
+          x: 0,
+          y: 0,
+          width: windowWidth,
+          height: 300,
+        }}
+      >
+        {({animateElement}) => {
+          return (
+            <TouchableOpacity
+              onPress={() => {
+                animateElement({
+                  type: 'timing',
+                  duration: 500,
+                });
+                props.navigation.navigate('Detail', {imageUri: uri});
+              }}
+            >
+              <Image
+                source={{uri, cache: 'force-cache'}}
+                style={{width: '100%', height: 100}}
+              />
+            </TouchableOpacity>
+          );
+        }}
+      </SharedElementOrigin>
+    );
+  });
 }
