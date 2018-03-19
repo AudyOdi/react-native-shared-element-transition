@@ -15,14 +15,14 @@ export default class Detail extends React.Component<Props> {
     let {imageUri} = this.props.navigation.state.params;
     return (
       <SharedElementDestination id={imageUri} headerHeight={Header.HEIGHT}>
-        {({getState}) => {
+        {({getState, destination}) => {
           let {isAnimating, id} = getState();
           return (
             <View style={{flex: 1}}>
               <Image
                 style={{
-                  width: '100%',
-                  height: 300,
+                  width: destination.width,
+                  height: destination.height,
                   opacity: isAnimating && id === imageUri ? 0 : 1,
                 }}
                 source={{

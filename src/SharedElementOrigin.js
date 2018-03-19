@@ -6,17 +6,25 @@ import TransitionContext from './TransitionContext';
 
 type Props = {
   id: string,
+  image: Object | number,
+  destination: Object,
+  children: Function,
   style?: Object,
   headerHeight?: number,
-  children: Function,
 };
 
 export default class SharedElementOrigin extends React.Component<Props> {
   _elementRef = null;
   _measurement = null;
-  _image = null;
   render() {
-    let {style, id, headerHeight = 0, children} = this.props;
+    let {
+      style,
+      id,
+      headerHeight = 0,
+      image,
+      destination,
+      children,
+    } = this.props;
     return (
       <TransitionContext.Consumer>
         {({
@@ -52,21 +60,16 @@ export default class SharedElementOrigin extends React.Component<Props> {
               style={style}
             >
               {children({
-                setDestination: ({...coordinate}) => {
-                  setDestination({
-                    ...coordinate,
-                    y: headerHeight + coordinate.y,
-                  });
-                },
                 getState,
-                setImage: (image) => {
-                  this._image = image;
-                },
-                animateElement: () => {
+                animateElement: (animationParam: Object) => {
                   if (this._measurement) {
                     setSource(this._measurement);
-                    setImage(this._image);
-                    animateElement(id);
+                    setDestination({
+                      ...destination,
+                      y: headerHeight + destination.y,
+                    });
+                    setImage(image);
+                    animateElement(id, animationParam);
                   }
                 },
               })}

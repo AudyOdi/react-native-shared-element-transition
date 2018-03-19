@@ -27,19 +27,22 @@ export default class List extends React.Component<Props> {
           id={uri}
           style={{width: '50%'}}
           headerHeight={Header.HEIGHT}
+          image={{uri}}
+          destination={{
+            x: 0,
+            y: 0,
+            width: windowWidth,
+            height: 300,
+          }}
         >
-          {({setImage, setDestination, animateElement}) => {
-            setImage({uri});
+          {({animateElement}) => {
             return (
               <TouchableOpacity
                 onPress={() => {
-                  setDestination({
-                    x: 0,
-                    y: 0,
-                    width: windowWidth,
-                    height: 300,
+                  animateElement({
+                    type: 'timing',
+                    duration: 500,
                   });
-                  animateElement();
                   this.props.navigation.navigate('Detail', {imageUri: uri});
                 }}
               >

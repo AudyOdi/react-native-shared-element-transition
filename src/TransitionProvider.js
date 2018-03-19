@@ -28,10 +28,15 @@ export default class TransitionProvider extends React.Component<Props, State> {
   _source = null;
   _destination = null;
 
-  _animateImage = (toValue: number) => {
-    Animated.timing(this._animatedValue, {
+  _animateImage = (
+    toValue: number,
+    animationParam: { type: 'spring' | 'timing', duration: number },
+  ) => {
+    let {type, ...otherAnimationParams} = animationParam;
+    Animated[type](this._animatedValue, {
       toValue,
       duration: 2000,
+      ...otherAnimationParams,
     }).start(() => {
       this.setState({
         id: null,
@@ -83,12 +88,12 @@ export default class TransitionProvider extends React.Component<Props, State> {
             return this._animatedValue;
           },
 
-          animateElement: (id: string) => {
+          animateElement: (id: string, animationParams: Object) => {
             if (id !== this.state.id) {
               this._animatedValue = new Animated.Value(0);
             }
             this.setState({id, isAnimating: true}, () => {
-              this._animateImage(1);
+              this._animateImage(1, animationParams);
             });
           },
 

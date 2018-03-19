@@ -20,21 +20,25 @@ export default class SharedElementDestination extends React.Component<Props> {
       <TransitionContext.Consumer>
         {({getDestination, getState}) => {
           let destination = getDestination();
+          let adjustedDestination = {
+            ...destination,
+            y: destination.y - headerHeight,
+          };
           return (
             <View
               style={[
                 {
-                  width: destination.width,
-                  height: destination.height,
+                  width: adjustedDestination.width,
+                  height: adjustedDestination.height,
                   transform: [
-                    {translateX: destination.x},
-                    {translateY: destination.y - headerHeight},
+                    {translateX: adjustedDestination.x},
+                    {translateY: adjustedDestination.y},
                   ],
                 },
                 style,
               ]}
             >
-              {children({getState})}
+              {children({getState, destination: adjustedDestination})}
             </View>
           );
         }}
